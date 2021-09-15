@@ -1,0 +1,27 @@
+{
+  "name": "ato_backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon  ./src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/joo-ju/ATO_Backend.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/joo-ju/ATO_Backend/issues"
+  },
+  "homepage": "https://github.com/joo-ju/ATO_Backend#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^4.0.0"
+  }
+}
