@@ -2,12 +2,22 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
-
+const cors = require("cors");
 //express 사용
 const app = express();
 
-// mongoose connect
+// Middlewares
+app.use(cors());
 
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+
+// import Routes
+const eventRoute = require("./routes/events");
+
+app.use("/events", eventRoute);
+
+// mongoose connect
 mongoose
   .connect("mongodb://localhost:27017/ato", {
     useNewUrlParser: true,
@@ -19,9 +29,6 @@ mongoose
   .catch((e) => {
     console.error(e);
   });
-
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
 
 app.get("/", (req, res) => {
   res.send("Hello World");

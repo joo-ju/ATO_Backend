@@ -8,13 +8,14 @@ const eventSchema = new Schema({
   sellerId: { type: String }, // 주최자 ID
   age: { type: Number }, // 연령 제한(_세 이상)
   price: { type: Number }, // 결제 금액
-  score: { type: Number }, // 별점 점수
-  count: { type: Number }, // 후기 갯수
+  score: { type: Number, default: 0 }, // 별점 점수
+  count: { type: Number, default: 0 }, // 후기 갯수
   showTime: [
     {
-        dateTime: Date,   // 행사 날짜
-        amount: Number,   // 좌석 갯수  
-    }, 
+      dateTime: Date, // 행사 날짜
+      amount: Number, // 좌석 갯수
+    },
+  ],
   enrollTime: { type: Date, default: Date.now }, // 등록 시간
   updateTime: { type: Date, default: Date.now }, // 마지막 수정 시간
   deleteTime: { type: Date }, // 취소 시간
