@@ -13,9 +13,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 // import Routes
-const eventRoute = require("./routes/events");
+const eventRoute = require("./routes/event");
+const goodsRoute = require("./routes/goods");
+app.use("/event", eventRoute);
 
-app.use("/events", eventRoute);
+app.use("/goods", goodsRoute);
 
 // mongoose connect
 mongoose

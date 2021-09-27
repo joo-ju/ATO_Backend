@@ -41,7 +41,7 @@ router.get("/:eventId", async (req, res) => {
 });
 
 // Update a Event
-router.patch("/:eventId", async (req, res) => {
+router.put("/:eventId", async (req, res) => {
   try {
     const updatedEvent = Event.updateOne(
       { _id: req.params.eventId },
