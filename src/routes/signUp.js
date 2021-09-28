@@ -47,7 +47,7 @@ router.patch("/:userId", async (req, res) => {
     const updateduser = User.updateOne(
       { _id: req.params.userId },
       {
-        $set: { name: req.body.name },
+        $set: { nickname: req.body.nickname },
       }
     );
     res.json(updateduser);

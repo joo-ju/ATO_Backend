@@ -14,10 +14,12 @@ app.use(bodyParser.json());
 
 // import Routes
 const eventRoute = require("./routes/events");
-const loginRoute = require("./routes/signUp");
+const signUpRoute = require("./routes/signUp");
+const loginRoute = require("./routes/login");
 
 app.use("/events", eventRoute);
-app.use("/signUp", loginRoute);
+app.use("/signUp", signUpRoute);
+app.use("/login", loginRoute);
 
 // mongoose connect
 mongoose
