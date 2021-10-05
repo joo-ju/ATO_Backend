@@ -31,10 +31,10 @@ router.post("/", async (req, res) => {
     });
 });
 
-// Specific User
-router.get("/:userId", async (req, res) => {
+// Specific User by username(id)
+router.get("/:username", async (req, res) => {
   try {
-    const user = await User.findById(req.params.userId);
+    const user = await User.find({ username: req.params.username });
     res.json(user);
   } catch (err) {
     res.json({ message: err });
@@ -42,10 +42,10 @@ router.get("/:userId", async (req, res) => {
 });
 
 // Update User
-router.patch("/:userId", async (req, res) => {
+router.patch("/:username", async (req, res) => {
   try {
     const updateduser = User.updateOne(
-      { _id: req.params.userId },
+      { username: req.params.username },
       {
         $set: { nickname: req.body.nickname },
       }
@@ -57,9 +57,9 @@ router.patch("/:userId", async (req, res) => {
 });
 
 // Delete User
-router.delete("/:userId", async (req, res) => {
+router.delete("/:userusernameId", async (req, res) => {
   try {
-    const removeduser = await User.remove({ _id: req.params.userId });
+    const removeduser = await User.remove({ username: req.params.username });
     res.json(removeduser);
   } catch (err) {
     res.json({ message: err });
