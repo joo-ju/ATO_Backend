@@ -28,7 +28,7 @@ app.use("/goods", goodsRoute);
 app.use("/post", postRoute);
 // mongoose connect
 mongoose
-  .connect("mongodb://localhost:27017/ato", {
+  .connect("mongodb://3.31.140.23:27017/ato", {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
