@@ -13,10 +13,13 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 // import Routes
+
+const signUpRoute = require("./routes/signUp");
+const loginRoute = require("./routes/login");
 const eventRoute = require("./routes/event");
 const goodsRoute = require("./routes/goods");
 const postRoute = require("./routes/post");
-const loginRoute = require("./routes/signUp");
+
 
 
 app.use("/signUp", loginRoute);
