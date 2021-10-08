@@ -2,9 +2,9 @@ const express = require("express");
 const Event = require("../model/event");
 const router = express.Router();
 
-router.get("/", (req, res) => {
-  res.send("event get");
-});
+// router.get("/", (req, res) => {
+//   res.send("event get");
+// });
 
 router.post("/", async (req, res) => {
   console.log(req.body);
@@ -39,9 +39,17 @@ router.get("/:eventId", async (req, res) => {
     res.json({ message: err });
   }
 });
+router.get("/", async (req, res) => {
+  try {
+    const event = await Event.find();
+    res.json(event);
+  } catch (err) {
+    res.json({ message: err });
+  }
+});
 
 // Update a Event
-router.patch("/:eventId", async (req, res) => {
+router.put("/:eventId", async (req, res) => {
   try {
     const updatedEvent = Event.updateOne(
       { _id: req.params.eventId },

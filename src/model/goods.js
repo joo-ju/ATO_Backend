@@ -7,7 +7,7 @@ const goodsSchema = new Schema({
   content: { type: String }, // 내용
   sellerId: { type: String }, // 판매자
   buyerId: { type: String }, // 구매자
-  state: { type: String }, // 판매중, 예약 등 상태
+  state: { type: String, default: "판매중" }, // 판매중, 예약 등 상태
   price: { type: Number }, // 결제 금액
   score: { type: Number }, // 별점 점수
   image: [], // 이미지
