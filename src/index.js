@@ -16,8 +16,11 @@ app.use(bodyParser.json());
 const eventRoute = require("./routes/event");
 const goodsRoute = require("./routes/goods");
 const postRoute = require("./routes/post");
-app.use("/event", eventRoute);
+const loginRoute = require("./routes/signUp");
 
+
+app.use("/signUp", loginRoute);
+app.use("/event", eventRoute);
 app.use("/goods", goodsRoute);
 app.use("/post", postRoute);
 // mongoose connect
@@ -35,6 +38,7 @@ mongoose
 
 app.get("/", (req, res) => {
   res.send("Hello World");
+  console.log("Hello World");
 });
 
 // http listen port 생성 서버 실행
