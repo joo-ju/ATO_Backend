@@ -15,10 +15,11 @@ app.use(bodyParser.json());
 // import Routes
 const eventRoute = require("./routes/event");
 const goodsRoute = require("./routes/goods");
+const postRoute = require("./routes/post");
 app.use("/event", eventRoute);
 
 app.use("/goods", goodsRoute);
-
+app.use("/post", postRoute);
 // mongoose connect
 mongoose
   .connect("mongodb://localhost:27017/ato", {

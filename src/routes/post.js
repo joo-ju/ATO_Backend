@@ -1,18 +1,14 @@
 const express = require("express");
-const Goods = require("../model/goods");
+const Post = require("../model/post");
 const router = express.Router();
 
-router.post("/", async (req, res) => {
+router.post("/createpost", async (req, res) => {
   console.log(req.body);
-  const goods = new Goods({
+  const post = new Post({
     title: req.body.title,
-    categoryId: req.body.categoryId,
-    content: req.body.content,
-    sellerId: req.body.sellerId,
-    price: req.body.price,
-    tags: req.body.tags,
+    post: req.body.post,
   });
-  goods
+  post
     .save()
     // .exec()
     .then((data) => {
@@ -23,34 +19,13 @@ router.post("/", async (req, res) => {
     });
 });
 
-router.get("/fetchOne/:id", async (req, res) => {
-  //   let post;
-  try {
-    console.log(req.params.id);
-    const goods = await Goods.findById(req.params.id);
-
-    res.json(
-      goods
-      //   error: false,
-      //   message: "Success retrived all books",
-      //   "data": post,
-      //   post,
-    );
-  } catch (err) {
-    res.json({
-      error: false,
-      message: err,
-      data: goods,
-    });
-  }
-});
 router.get("/", async (req, res) => {
   //   let post;
   try {
-    const goods = await Goods.find();
+    const post = await Post.find();
 
     res.json(
-      goods
+      post
       //   error: false,
       //   message: "Success retrived all books",
       //   "data": post,
@@ -60,26 +35,46 @@ router.get("/", async (req, res) => {
     res.json({
       error: false,
       message: err,
-      data: goods,
+      data: post,
     });
   }
 });
-router.put("/updateGoods", async (req, res) => {
+
+// router.put("/updatepost/:postId", async (req, res) => {
+//   try {
+//     // const updatedPost = Post.updateOne(req.params.postId, req.body, {
+//     //   upsert: true,
+//     //   new: true,
+//     // }).exec();
+//     const updatedPost = Post.updateOne(
+//       { _id: req.params.postId },
+//       {
+//         $set: { title: req.body.title, post: req.body.post },
+//       },
+//       {
+//         upsert: true,
+//         new: true,
+//       }
+//     ).exec();
+//     res.json(updatedPost);
+//     console.log(updatedPost);
+//   } catch (err) {
+//     console.log(err);
+//     res.json({ message: err });
+//   }
+// });
+
+router.put("/updatepost", async (req, res) => {
   try {
     // const updatedPost = Post.updateOne(req.params.postId, req.body, {
     //   upsert: true,
     //   new: true,
     // }).exec();
     console.log(req.body);
-    const updatedPost = Goods.updateOne(
+    const updatedPost = Post.updateOne(
       { _id: req.body.id },
       {
-        $set: {
-          title: req.body.title,
-          content: req.body.content,
-          price: req.body.price,
-          tags: req.body.tags,
-        },
+        $set: { title: req.body.title, post: req.body.post },
       },
       {
         upsert: true,
@@ -93,4 +88,5 @@ router.put("/updateGoods", async (req, res) => {
     res.json({ message: err });
   }
 });
+
 module.exports = router;

@@ -2,9 +2,9 @@ const express = require("express");
 const Event = require("../model/event");
 const router = express.Router();
 
-router.get("/", (req, res) => {
-  res.send("event get");
-});
+// router.get("/", (req, res) => {
+//   res.send("event get");
+// });
 
 router.post("/", async (req, res) => {
   console.log(req.body);
@@ -34,6 +34,14 @@ router.post("/", async (req, res) => {
 router.get("/:eventId", async (req, res) => {
   try {
     const event = await Event.findById(req.params.eventId);
+    res.json(event);
+  } catch (err) {
+    res.json({ message: err });
+  }
+});
+router.get("/", async (req, res) => {
+  try {
+    const event = await Event.find();
     res.json(event);
   } catch (err) {
     res.json({ message: err });
