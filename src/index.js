@@ -3,32 +3,41 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const session = require("express-session");
+const mongoStore = require("connect-mongo");
+
 //express 사용
 const app = express();
 
 // Middlewares
 app.use(cors());
 
+// session
+app.use(
+  session({
+    secret: "dkssudgktpdy",
+    resave: false,
+    saveUninitialized: true,
+    store: mongoStore.create({ mongoUrl: "mongodb://localhost:27017/ato" }),
+  })
+);
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 // import Routes
-
+const eventRoute = require("./routes/events");
 const signUpRoute = require("./routes/signUp");
 const loginRoute = require("./routes/login");
-const eventRoute = require("./routes/event");
-const goodsRoute = require("./routes/goods");
-const postRoute = require("./routes/post");
 
+app.use("/events", eventRoute);
+app.use("/signUp", signUpRoute);
+app.use("/login", loginRoute);
 
-
-app.use("/signUp", loginRoute);
-app.use("/event", eventRoute);
-app.use("/goods", goodsRoute);
-app.use("/post", postRoute);
 // mongoose connect
 mongoose
-  .connect("mongodb://3.31.140.23:27017/ato", {
+  .connect("mongodb://localhost:27017/ato", {
+    // .connect("mongodb://3.31.140.23:27017/ato", {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
