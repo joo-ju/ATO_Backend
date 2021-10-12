@@ -44,6 +44,93 @@ router.get("/fetchOne/:id", async (req, res) => {
     });
   }
 });
+
+// 로그인한 유저의 판매중인 제품 가져오기
+router.get("/user/sale/all/:sellerId", async (req, res) => {
+  //   let post;
+  try {
+    console.log(req.params.sellerId);
+    const goods = await Goods.find({
+      sellerId: req.params.sellerId,
+      state: "판매중",
+    });
+
+    res.json(
+      goods
+      //   error: false,
+      //   message: "Success retrived all books",
+      //   "data": post,
+      //   post,
+    );
+  } catch (err) {
+    res.json({
+      error: false,
+      message: err,
+      data: goods,
+    });
+  }
+});
+
+// 로그인한 유저의 판매완료 제품 가져오기
+router.get("/user/sold/all/:sellerId", async (req, res) => {
+  //   let post;
+  try {
+    console.log(req.params.sellerId);
+    const goods = await Goods.find({
+      sellerId: req.params.sellerId,
+      state: "판매완료",
+    });
+
+    res.json(goods);
+  } catch (err) {
+    res.json({
+      error: false,
+      message: err,
+      data: goods,
+    });
+  }
+});
+
+// 로그인한 유저의 숨김 제품 가져오기
+router.get("/user/hiding/all/:sellerId", async (req, res) => {
+  //   let post;
+  try {
+    console.log(req.params.sellerId);
+    const goods = await Goods.find({
+      sellerId: req.params.sellerId,
+      state: "숨김",
+    });
+
+    res.json(goods);
+  } catch (err) {
+    res.json({
+      error: false,
+      message: err,
+      data: goods,
+    });
+  }
+});
+
+// 로그인한 유저가 구매한 제품 가져오기
+router.get("/user/buy/all/:buyerId", async (req, res) => {
+  //   let post;
+  try {
+    console.log(req.params.buyerId);
+    const goods = await Goods.find({
+      buyerId: req.params.buyerId,
+      state: "판매완료",
+    });
+
+    res.json(goods);
+  } catch (err) {
+    res.json({
+      error: false,
+      message: err,
+      data: goods,
+    });
+  }
+});
+
 router.get("/", async (req, res) => {
   //   let post;
   try {
