@@ -10,7 +10,8 @@ const goodsSchema = new Schema({
   state: { type: String, default: "판매중" }, // 판매중, 예약 등 상태
   price: { type: Number, default: 0 }, // 결제 금액
   score: { type: Number, default: 0 }, // 별점 점수
-  wish: { type: Number, default: 0 }, // 찜 갯수
+  wishCount: { type: Number, default: 0 }, // 찜 갯수
+  wishUser: [],
   chat: { type: Number, default: 0 }, // 채팅 갯수
   review: { type: Boolean, default: false }, // 채팅 갯수
   image: [], // 이미지

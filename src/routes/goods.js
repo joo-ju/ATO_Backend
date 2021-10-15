@@ -27,7 +27,28 @@ router.get("/fetchOne/:id", async (req, res) => {
   //   let post;
   try {
     console.log(req.params.id);
-    const goods = await Goods.findById(req.params.id);
+    const goods = await Goods.findOne({ _id: req.params.id });
+
+    res.json(
+      goods
+      //   error: false,
+      //   message: "Success retrived all books",
+      //   "data": post,
+      //   post,
+    );
+  } catch (err) {
+    res.json({
+      error: false,
+      message: err,
+      data: goods,
+    });
+  }
+});
+router.get("/wish/fetchOne/:id", async (req, res) => {
+  //   let post;
+  try {
+    console.log(req.params.id);
+    const goods = await Goods.find({ _id: req.params.id });
 
     res.json(
       goods
@@ -131,10 +152,31 @@ router.get("/user/buy/all/:buyerId", async (req, res) => {
   }
 });
 
-router.get("/", async (req, res) => {
+router.get("/sale/all", async (req, res) => {
   //   let post;
   try {
-    const goods = await Goods.find();
+    const goods = await Goods.find({ state: "판매중" });
+
+    res.json(
+      goods
+      //   error: false,
+      //   message: "Success retrived all books",
+      //   "data": post,
+      //   post,
+    );
+  } catch (err) {
+    res.json({
+      error: false,
+      message: err,
+      data: goods,
+    });
+  }
+});
+// id 받아서 1개 보내기
+router.get("/one/:id", async (req, res) => {
+  //   let post;
+  try {
+    const goods = await Goods.findById(req.params.id);
 
     res.json(
       goods
@@ -166,6 +208,7 @@ router.put("/updateGoods", async (req, res) => {
           content: req.body.content,
           price: req.body.price,
           tags: req.body.tags,
+          updateTime: Date.now(),
         },
       },
       {
