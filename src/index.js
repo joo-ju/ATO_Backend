@@ -26,14 +26,15 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 // import Routes
-const eventRoute = require("./routes/events");
-const signUpRoute = require("./routes/signUp");
-const loginRoute = require("./routes/login");
+const eventRoute = require("./routes/event");
+const userRoute = require("./routes/user");
+// const signUpRoute = require("./routes/signUp");
+// const loginRoute = require("./routes/login");
 
 app.use("/events", eventRoute);
-app.use("/signUp", signUpRoute);
-app.use("/login", loginRoute);
-
+// app.use("/signUp", signUpRoute);
+// app.use("/login", loginRoute);
+app.use("/user", userRoute);
 // mongoose connect
 mongoose
   .connect("mongodb://localhost:27017/ato", {

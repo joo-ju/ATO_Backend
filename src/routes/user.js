@@ -15,13 +15,13 @@ router.post("/login", async (req, res) => {
         req.session.user = {
           id: data[0]._id,
           username: data[0].username,
-          authorized: true
+          authorized: true,
         };
-        res.send({ session: req.session });
+        res.send({ user: req.session.user });
       } else {
         res.json({
           status: "Failed",
-          message: "Not exist user"
+          message: "Not exist user",
         });
       }
     })
@@ -33,17 +33,19 @@ router.post("/login", async (req, res) => {
 router.get("/logout", async (req, res) => {
   console.log(req.session);
   if (req.session.user) {
-    req.session.destroy(() => {
-      res.json({ message: "remove session and logout account" });
-      res.redirect("/");
-      console.log(req.session);
-    }).catch((err) => {
-      res.json(err);
-    })
+    req.session
+      .destroy(() => {
+        res.json({ message: "remove session and logout account" });
+        res.redirect("/");
+        console.log(req.session);
+      })
+      .catch((err) => {
+        res.json(err);
+      });
   } else {
     res.json({ message: "not login status" });
   }
-})
+});
 
 router.post("/signup", async (req, res) => {
   const user = new User({
@@ -52,11 +54,17 @@ router.post("/signup", async (req, res) => {
     name: req.body.name,
     nickname: req.body.nickname,
     email: req.body.email,
-    phone: req.body.phone
+    phone: req.body.phone,
   });
 
   try {
-    if (user.username == "" || user.password == "" || user.name == "" || user.email == "" || user.phone == "") {
+    if (
+      user.username == "" ||
+      user.password == "" ||
+      user.name == "" ||
+      user.email == "" ||
+      user.phone == ""
+    ) {
       res.json({
         status: "Failed",
         message: "Empty input fields",
