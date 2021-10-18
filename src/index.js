@@ -36,6 +36,7 @@ const goodsRoute = require("./routes/goods");
 const postRoute = require("./routes/post");
 const reviewGoodsRoute = require("./routes/reviewGoods");
 const userHistoryRoute = require("./routes/userHistory");
+const chatRoute = require("./routes/chat");
 
 app.use("/signUp", loginRoute);
 app.use("/event", eventRoute);
@@ -43,6 +44,7 @@ app.use("/goods", goodsRoute);
 app.use("/post", postRoute);
 app.use("/reviewGoods", reviewGoodsRoute);
 app.use("/userHistory", userHistoryRoute);
+app.use("/chat", chatRoute);
 // mongoose connect
 mongoose
   // .connect("mongodb://3.31.140.23:27017/ato", {
