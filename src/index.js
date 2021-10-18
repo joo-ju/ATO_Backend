@@ -19,16 +19,19 @@ const loginRoute = require("./routes/login");
 const eventRoute = require("./routes/event");
 const goodsRoute = require("./routes/goods");
 const postRoute = require("./routes/post");
-
-
+const reviewGoodsRoute = require("./routes/reviewGoods");
+const userHistoryRoute = require("./routes/userHistory");
 
 app.use("/signUp", loginRoute);
 app.use("/event", eventRoute);
 app.use("/goods", goodsRoute);
 app.use("/post", postRoute);
+app.use("/reviewGoods", reviewGoodsRoute);
+app.use("/userHistory", userHistoryRoute);
 // mongoose connect
 mongoose
-  .connect("mongodb://3.31.140.23:27017/ato", {
+  // .connect("mongodb://3.31.140.23:27017/ato", {
+  .connect("mongodb://localhost:27017/ato", {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
