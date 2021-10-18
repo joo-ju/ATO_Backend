@@ -34,7 +34,6 @@ const reviewGoodsRoute = require("./routes/reviewGoods");
 const userHistoryRoute = require("./routes/userHistory");
 const userRoute = require("./routes/user");
 
-app.use("/signUp", loginRoute);
 app.use("/event", eventRoute);
 app.use("/goods", goodsRoute);
 app.use("/post", postRoute);
@@ -45,7 +44,6 @@ app.use("/user", userRoute);
 mongoose
   // .connect("mongodb://3.31.140.23:27017/ato", {
   .connect("mongodb://localhost:27017/ato", {
-
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
