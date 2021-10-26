@@ -3,8 +3,13 @@ var express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const cors = require("cors");
-const Room = require("./model/room");
-const Chat = require("./model/chat");
+
+// const Room = require("./model/room");
+// const Chat = require("./model/chat");
+
+const session = require("express-session");
+const mongoStore = require("connect-mongo");
+
 //express 사용
 var app = express();
 
@@ -26,28 +31,42 @@ httpServer.listen(8080);
 // Middlewares
 app.use(cors());
 
+// session
+app.use(
+  session({
+    secret: "dkssudgktpdy",
+    resave: false,
+    saveUninitialized: true,
+    store: mongoStore.create({ mongoUrl: "mongodb://localhost:27017/ato" }),
+  })
+);
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 // import Routes
-
-const signUpRoute = require("./routes/signUp");
-const loginRoute = require("./routes/login");
 const eventRoute = require("./routes/event");
+
 const goodsRoute = require("./routes/goods");
 const postRoute = require("./routes/post");
 const reviewGoodsRoute = require("./routes/reviewGoods");
 const userHistoryRoute = require("./routes/userHistory");
-const chatRoute = require("./routes/chat");
-const { ppid } = require("process");
 
-app.use("/signUp", loginRoute);
+const chatRoute = require("./routes/chat");
+// const { ppid } = require("process");
+
+const userRoute = require("./routes/user");
+
 app.use("/event", eventRoute);
 app.use("/goods", goodsRoute);
 app.use("/post", postRoute);
 app.use("/reviewGoods", reviewGoodsRoute);
 app.use("/userHistory", userHistoryRoute);
+
 app.use("/chat", chatRoute);
+
+app.use("/user", userRoute);
+
 // mongoose connect
 mongoose
   // .connect("mongodb://3.31.140.23:27017/ato", {
@@ -70,7 +89,7 @@ app.get("/", (req, res) => {
 // http listen port 생성 서버 실행
 app.listen(4000, () => console.log("Listening on port 4000"));
 // connections = [];
-rooms = [];
+
 // server.listen(5000);
 console.log("Socket Server is running...");
 
@@ -204,7 +223,7 @@ console.log("Socket Server is running...");
 //   // socket.on()
 // });
 
-connections = [];
+var connections = [];
 
 io.sockets.on("connection", function (socket) {
   connections.push(socket);
@@ -213,6 +232,7 @@ io.sockets.on("connection", function (socket) {
   // disconnect
   socket.on("disconnect", function (data) {
     connections.splice(connections.indexOf(socket), 1);
+    console.log(data);
     console.log("Discconect: %s sockets are connected", connections.length);
   });
 
