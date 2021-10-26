@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const room = require("./room");
 
 const { Schema } = mongoose;
 const userHistorySchema = new Schema({
@@ -68,6 +69,8 @@ const userHistorySchema = new Schema({
       deleteTime: { type: Date }, // 취소 시간
     },
   ],
+  chatRooms: [mongoose.Schema.Types.Mixed],
+  // chatRooms: [mongoose.Schema.Types.room],
   // 상품 찜 내역
   wishGoods: [
     // {

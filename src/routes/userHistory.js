@@ -6,7 +6,7 @@ const router = express.Router();
 router.post("/", async (req, res) => {
   console.log(req.body);
   const userhistory = new UserHistory({
-    userId: req.body.user,
+    userId: req.body.userId,
   });
   userhistory
     .save()
