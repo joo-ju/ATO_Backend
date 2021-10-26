@@ -57,11 +57,25 @@ router.post("/", upload.array('image', 5), async (req, res) => {
     });
 });
 
+router.get("/image/:image", async (req, res) => {
+  try {
+    console.log(req.url.split('/')[2]);
+    res.sendFile(req.url.split('/')[2], { root: './images/goods/'});
+    
+  } catch (err) {
+    res.json({
+      error: false,
+      message: err,
+      data: req.url
+    });
+  }
+});
+
 router.get("/fetchOne/:id", async (req, res) => {
   //   let post;
   try {
     console.log(req.params.id);
-    const goods = await Goods.findById(req.params.id);
+    const goods = await Goods.findOne({ _id: req.params.id });
 
     res.json(
       goods
@@ -79,25 +93,139 @@ router.get("/fetchOne/:id", async (req, res) => {
   }
 });
 
-// display image
-router.get("/image/:image", async (req, res) => {
+router.get("/wish/fetchOne/:id", async (req, res) => {
+  //   let post;
   try {
-    console.log(req.url.split('/')[2]);
-    res.sendFile(req.url.split('/')[2], { root: './images/goods/'});
+    console.log(req.params.id);
+    const goods = await Goods.find({ _id: req.params.id });
 
+    res.json(
+      goods
+      //   error: false,
+      //   message: "Success retrived all books",
+      //   "data": post,
+      //   post,
+    );
   } catch (err) {
     res.json({
       error: false,
       message: err,
-      data: req.url
+      data: goods,
     });
   }
 });
 
-router.get("/", async (req, res) => {
+// 로그인한 유저의 판매중인 제품 가져오기
+router.get("/user/sale/all/:sellerId", async (req, res) => {
   //   let post;
   try {
-    const goods = await Goods.find();
+    console.log(req.params.sellerId);
+    const goods = await Goods.find({
+      sellerId: req.params.sellerId,
+      state: "판매중",
+    });
+
+    res.json(
+      goods
+      //   error: false,
+      //   message: "Success retrived all books",
+      //   "data": post,
+      //   post,
+    );
+  } catch (err) {
+    res.json({
+      error: false,
+      message: err,
+      data: goods,
+    });
+  }
+});
+
+// 로그인한 유저의 판매완료 제품 가져오기
+router.get("/user/sold/all/:sellerId", async (req, res) => {
+  //   let post;
+  try {
+    console.log(req.params.sellerId);
+    const goods = await Goods.find({
+      sellerId: req.params.sellerId,
+      state: "판매완료",
+    });
+
+    res.json(goods);
+  } catch (err) {
+    res.json({
+      error: false,
+      message: err,
+      data: goods,
+    });
+  }
+});
+
+// 로그인한 유저의 숨김 제품 가져오기
+router.get("/user/hiding/all/:sellerId", async (req, res) => {
+  //   let post;
+  try {
+    console.log(req.params.sellerId);
+    const goods = await Goods.find({
+      sellerId: req.params.sellerId,
+      state: "숨김",
+    });
+
+    res.json(goods);
+  } catch (err) {
+    res.json({
+      error: false,
+      message: err,
+      data: goods,
+    });
+  }
+});
+
+// 로그인한 유저가 구매한 제품 가져오기
+router.get("/user/buy/all/:buyerId", async (req, res) => {
+  //   let post;
+  try {
+    console.log(req.params.buyerId);
+    const goods = await Goods.find({
+      buyerId: req.params.buyerId,
+      state: "판매완료",
+    });
+
+    res.json(goods);
+  } catch (err) {
+    res.json({
+      error: false,
+      message: err,
+      data: goods,
+    });
+  }
+});
+
+router.get("/sale/all", async (req, res) => {
+  //   let post;
+  try {
+    const goods = await Goods.find({ state: "판매중" });
+
+    res.json(
+      goods
+      //   error: false,
+      //   message: "Success retrived all books",
+      //   "data": post,
+      //   post,
+    );
+  } catch (err) {
+    res.json({
+      error: false,
+      message: err,
+      data: goods,
+    });
+  }
+});
+// id 받아서 1개 보내기
+router.get("/one/:id", async (req, res) => {
+  //   let post;
+  try {
+    const goods = await Goods.findById(req.params.id);
 
     res.json(
       goods
@@ -130,6 +258,7 @@ router.put("/updateGoods", async (req, res) => {
           content: req.body.content,
           price: req.body.price,
           tags: req.body.tags,
+          updateTime: Date.now(),
         },
       },
       {
