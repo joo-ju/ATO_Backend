@@ -9,7 +9,7 @@ const storage = multer.diskStorage({
   filename: (req, file, cb) => {
     // not working on new Date().toISOString()
     cb(null, Date.now() + "_" + file.originalname);
-  }
+  },
 });
 
 // check image extension
@@ -24,7 +24,7 @@ const fileFilter = (req, file, cb) => {
 const upload = multer({
   storage: storage,
   limits: { fileSize: 1024 * 1024 * 5 },
-  fileFilter: fileFilter
+  fileFilter: fileFilter,
 });
 
 // All Users
@@ -36,7 +36,7 @@ router.get("/", async (req, res) => {
 // Find One User
 router.get("/:userId", async (req, res) => {
   try {
-    const user = await User.find({ _id: req.params.userId });
+    const user = await User.findOne({ _id: req.params.userId });
     res.json(user);
   } catch (err) {
     res.json({
@@ -45,7 +45,7 @@ router.get("/:userId", async (req, res) => {
       data: user,
     });
   }
-})
+});
 
 router.post("/login", async (req, res) => {
   User.find({ username: req.body.username, password: req.body.password })
@@ -155,20 +155,19 @@ router.post("/signup", async (req, res) => {
 // Display Image
 router.get("/userimage/:image", async (req, res) => {
   try {
-    console.log(req.url.split('/')[2]);
-    res.sendFile(req.url.split('/')[2], { root: './images/user/'});
-
+    console.log(req.url.split("/")[2]);
+    res.sendFile(req.url.split("/")[2], { root: "./images/user/" });
   } catch (err) {
     res.json({
       error: false,
       message: err,
-      data: req.url
+      data: req.url,
     });
   }
 });
 
 // Update Only User Image
-router.put("/userimage/:username", upload.single('image'), async (req, res) => {
+router.put("/userimage/:username", upload.single("image"), async (req, res) => {
   try {
     console.log(req.file);
     const updatedUser = await User.updateOne(
