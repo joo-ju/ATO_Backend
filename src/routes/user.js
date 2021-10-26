@@ -33,6 +33,20 @@ router.get("/", async (req, res) => {
   res.json(user);
 });
 
+// Find One User
+router.get("/:userId", async (req, res) => {
+  try {
+    const user = await User.find({ _id: req.params.userId });
+    res.json(user);
+  } catch (err) {
+    res.json({
+      error: false,
+      message: err,
+      data: user,
+    });
+  }
+})
+
 router.post("/login", async (req, res) => {
   User.find({ username: req.body.username, password: req.body.password })
     .then((data) => {
@@ -138,7 +152,22 @@ router.post("/signup", async (req, res) => {
   }
 });
 
-// Update User Image
+// Display Image
+router.get("/userimage/:image", async (req, res) => {
+  try {
+    console.log(req.url.split('/')[2]);
+    res.sendFile(req.url.split('/')[2], { root: './images/user/'});
+
+  } catch (err) {
+    res.json({
+      error: false,
+      message: err,
+      data: req.url
+    });
+  }
+});
+
+// Update Only User Image
 router.put("/userimage/:username", upload.single('image'), async (req, res) => {
   try {
     console.log(req.file);
@@ -154,18 +183,25 @@ router.put("/userimage/:username", upload.single('image'), async (req, res) => {
   }
 });
 
-// Display Image
-router.get("/userimage/:image", async (req, res) => {
+// Update User
+router.put("/:userId", upload.single("image"), async (req, res) => {
   try {
-    console.log(req.url.split('/')[2]);
-    res.sendFile(req.url.split('/')[2], { root: './images/user/'});
-
+    const updatedUser = await User.updateOne(
+      { username: req.params.userId },
+      {
+        $set: {
+          password: req.body.password,
+          name: req.body.name,
+          nickname: req.body.nickname,
+          email: req.bodyemail,
+          phone: req.body.phone,
+          image: req.file.filename,
+        },
+      }
+    );
+    res.json(updatedUser);
   } catch (err) {
-    res.json({
-      error: false,
-      message: err,
-      data: req.url
-    });
+    res.json({ message: err });
   }
 });
 
