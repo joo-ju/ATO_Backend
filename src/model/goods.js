@@ -14,7 +14,7 @@ const goodsSchema = new Schema({
   wishUser: [],
   chat: { type: Number, default: 0 }, // 채팅 갯수
   review: { type: Boolean, default: false }, // 채팅 갯수
-  image: [], // 이미지
+  image: [{ type: String, required: true }], // 이미지
   tags: [], // 태그
   count: { type: Number, default: 0 }, // 후기 갯수
   enrollTime: { type: Date, default: Date.now }, // 등록 시간

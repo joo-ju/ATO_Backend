@@ -40,6 +40,9 @@ app.use("/post", postRoute);
 app.use("/reviewGoods", reviewGoodsRoute);
 app.use("/userHistory", userHistoryRoute);
 app.use("/user", userRoute);
+app.use("/goods", goodsRoute);
+app.use(express.static("public"));
+
 // mongoose connect
 mongoose
   // .connect("mongodb://3.31.140.23:27017/ato", {
