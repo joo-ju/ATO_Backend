@@ -1,12 +1,51 @@
 const express = require("express");
 const User = require("../model/user");
 const router = express.Router();
+const multer = require("multer");
+
+// image upload directory
+const storage = multer.diskStorage({
+  destination: "./images/user",
+  filename: (req, file, cb) => {
+    // not working on new Date().toISOString()
+    cb(null, Date.now() + "_" + file.originalname);
+  }
+});
+
+// check image extension
+const fileFilter = (req, file, cb) => {
+  if (!file.originalname.match(/\.(png|jpg)$/)) {
+    cb(null, false);
+  } else {
+    cb(null, true);
+  }
+};
+
+const upload = multer({
+  storage: storage,
+  limits: { fileSize: 1024 * 1024 * 5 },
+  fileFilter: fileFilter
+});
 
 // All Users
 router.get("/", async (req, res) => {
   const user = await User.find({});
   res.json(user);
 });
+
+// Find One User
+router.get("/:userId", async (req, res) => {
+  try {
+    const user = await User.find({ _id: req.params.userId });
+    res.json(user);
+  } catch (err) {
+    res.json({
+      error: false,
+      message: err,
+      data: user,
+    });
+  }
+})
 
 router.post("/login", async (req, res) => {
   User.find({ username: req.body.username, password: req.body.password })
@@ -110,6 +149,59 @@ router.post("/signup", async (req, res) => {
   } catch (err) {
     res.json({ message: err });
     console.log(err);
+  }
+});
+
+// Display Image
+router.get("/userimage/:image", async (req, res) => {
+  try {
+    console.log(req.url.split('/')[2]);
+    res.sendFile(req.url.split('/')[2], { root: './images/user/'});
+
+  } catch (err) {
+    res.json({
+      error: false,
+      message: err,
+      data: req.url
+    });
+  }
+});
+
+// Update Only User Image
+router.put("/userimage/:username", upload.single('image'), async (req, res) => {
+  try {
+    console.log(req.file);
+    const updatedUser = await User.updateOne(
+      { username: req.params.username },
+      {
+        $set: { image: req.file.filename },
+      }
+    );
+    res.json(updatedUser);
+  } catch (err) {
+    res.json({ message: err });
+  }
+});
+
+// Update User
+router.put("/:userId", upload.single("image"), async (req, res) => {
+  try {
+    const updatedUser = await User.updateOne(
+      { username: req.params.userId },
+      {
+        $set: {
+          password: req.body.password,
+          name: req.body.name,
+          nickname: req.body.nickname,
+          email: req.bodyemail,
+          phone: req.body.phone,
+          image: req.file.filename,
+        },
+      }
+    );
+    res.json(updatedUser);
+  } catch (err) {
+    res.json({ message: err });
   }
 });
 
