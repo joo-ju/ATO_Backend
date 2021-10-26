@@ -10,6 +10,7 @@ const userSchema = new Schema({
   phone: { type: Number }, // 휴대폰 번호
   address: { type: String }, // 주소
   score: { type: Number, default: 0 }, // 점수
-  count: { type: Number, default: 0 }, // 후기 갯수
+  count: { type: Number, default: 0 }, // 후기 갯수,
+  image: { type: String, required: true },
 });
 module.exports = mongoose.model("user", userSchema);

@@ -2,11 +2,10 @@ const express = require("express");
 const Goods = require("../model/goods");
 const router = express.Router();
 const multer = require("multer");
-const { base } = require("../model/goods");
 
 // image upload directory
 const storage = multer.diskStorage({
-  destination: "./images",
+  destination: "./images/goods",
   filename: (req, file, cb) => {
     // not working on new Date().toISOString()
     cb(null, Date.now() + "_" + file.originalname);
@@ -15,7 +14,7 @@ const storage = multer.diskStorage({
 
 // check image extension
 const fileFilter = (req, file, cb) => {
-  if (!file.originalname.match(/\.(png|jpg)$/)) { 
+  if (!file.originalname.match(/\.(png|jpg)$/)) {
     cb(null, false);
   } else {
     cb(null, true);
@@ -80,10 +79,11 @@ router.get("/fetchOne/:id", async (req, res) => {
   }
 });
 
-router.get("/images/:image", async (req, res) => {
+// display image
+router.get("/image/:image", async (req, res) => {
   try {
-    console.log(req.url);
-    res.sendFile(req.url, { root: '.'});
+    console.log(req.url.split('/')[2]);
+    res.sendFile(req.url.split('/')[2], { root: './images/goods/'});
 
   } catch (err) {
     res.json({
