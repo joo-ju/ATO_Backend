@@ -10,7 +10,7 @@ const goodsSchema = new Schema({
   state: { type: String, default: "판매중" }, // 판매중, 예약 등 상태
   price: { type: Number }, // 결제 금액
   score: { type: Number }, // 별점 점수
-  image: [], // 이미지
+  image: [{ type: String, required: true }], // 이미지
   tags: [], // 태그
   count: { type: Number }, // 후기 갯수
   enrollTime: { type: Date, default: Date.now }, // 등록 시간

@@ -1,9 +1,43 @@
 const express = require("express");
 const Goods = require("../model/goods");
 const router = express.Router();
+const multer = require("multer");
+const { base } = require("../model/goods");
 
-router.post("/", async (req, res) => {
+// image upload directory
+const storage = multer.diskStorage({
+  destination: "./images",
+  filename: (req, file, cb) => {
+    // not working on new Date().toISOString()
+    cb(null, Date.now() + "_" + file.originalname);
+  }
+});
+
+// check image extension
+const fileFilter = (req, file, cb) => {
+  if (!file.originalname.match(/\.(png|jpg)$/)) { 
+    cb(null, false);
+  } else {
+    cb(null, true);
+  }
+};
+
+const upload = multer({
+  storage: storage,
+  limits: { fileSize: 1024 * 1024 * 5 },
+  fileFilter: fileFilter
+});
+
+// can post 1-5 images
+router.post("/", upload.array('image', 5), async (req, res) => {
+  console.log(req.files);
   console.log(req.body);
+  
+  var filenames = [];
+  req.files.forEach((item) => {
+    filenames.push(item.filename);
+  });
+
   const goods = new Goods({
     title: req.body.title,
     categoryId: req.body.categoryId,
@@ -11,6 +45,7 @@ router.post("/", async (req, res) => {
     sellerId: req.body.sellerId,
     price: req.body.price,
     tags: req.body.tags,
+    image: filenames
   });
   goods
     .save()
@@ -44,6 +79,21 @@ router.get("/fetchOne/:id", async (req, res) => {
     });
   }
 });
+
+router.get("/images/:image", async (req, res) => {
+  try {
+    console.log(req.url);
+    res.sendFile(req.url, { root: '.'});
+
+  } catch (err) {
+    res.json({
+      error: false,
+      message: err,
+      data: req.url
+    });
+  }
+});
+
 router.get("/", async (req, res) => {
   //   let post;
   try {
@@ -64,6 +114,7 @@ router.get("/", async (req, res) => {
     });
   }
 });
+
 router.put("/updateGoods", async (req, res) => {
   try {
     // const updatedPost = Post.updateOne(req.params.postId, req.body, {
@@ -93,4 +144,5 @@ router.put("/updateGoods", async (req, res) => {
     res.json({ message: err });
   }
 });
+
 module.exports = router;

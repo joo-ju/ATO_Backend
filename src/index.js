@@ -30,11 +30,15 @@ const eventRoute = require("./routes/event");
 const userRoute = require("./routes/user");
 // const signUpRoute = require("./routes/signUp");
 // const loginRoute = require("./routes/login");
+const goodsRoute = require("./routes/goods");
 
 app.use("/events", eventRoute);
 // app.use("/signUp", signUpRoute);
 // app.use("/login", loginRoute);
 app.use("/user", userRoute);
+app.use("/goods", goodsRoute);
+app.use(express.static("public"));
+
 // mongoose connect
 mongoose
   .connect("mongodb://localhost:27017/ato", {
