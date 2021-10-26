@@ -10,9 +10,9 @@ router.get("/", async (req, res) => {
 });
 
 // Specific User by username(id)
-router.get("/:username", async (req, res) => {
+router.get("/:userId", async (req, res) => {
   try {
-    const user = await User.find({ username: req.params.username });
+    const user = await User.findOne({ _id: req.params.userId });
     res.json(user);
   } catch (err) {
     res.json({ message: err });
