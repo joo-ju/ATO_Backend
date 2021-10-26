@@ -1,7 +1,7 @@
 {
   "name": "ato_backend",
   "version": "1.0.0",
-  "description": "",
+  "description": "---\r ### 패키지 설치\r ```\r npm install\r ```\r ### 서버 실행\r ```\r npm start\r ```",
   "main": "index.js",
   "scripts": {
     "start": "nodemon  ./src/index.js"
@@ -21,9 +21,12 @@
     "connect-mongo": "^4.6.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
+
     "mongoose": "^6.0.7",
     "socket.io": "*",
-    "express-session": "^1.17.2"
+    "express-session": "^1.17.2",
+    "multer": "^1.4.3"
+
   },
   "devDependencies": {
     "eslint": "^7.32.0",

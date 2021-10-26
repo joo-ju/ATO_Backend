@@ -67,6 +67,10 @@ app.use("/chat", chatRoute);
 
 app.use("/user", userRoute);
 
+app.use("/goods", goodsRoute);
+app.use(express.static("public"));
+
+
 // mongoose connect
 mongoose
   // .connect("mongodb://3.31.140.23:27017/ato", {
