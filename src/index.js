@@ -27,22 +27,26 @@ app.use(bodyParser.json());
 
 // import Routes
 const eventRoute = require("./routes/event");
-const userRoute = require("./routes/user");
-// const signUpRoute = require("./routes/signUp");
-// const loginRoute = require("./routes/login");
-const goodsRoute = require("./routes/goods");
 
-app.use("/events", eventRoute);
-// app.use("/signUp", signUpRoute);
-// app.use("/login", loginRoute);
+const goodsRoute = require("./routes/goods");
+const postRoute = require("./routes/post");
+const reviewGoodsRoute = require("./routes/reviewGoods");
+const userHistoryRoute = require("./routes/userHistory");
+const userRoute = require("./routes/user");
+
+app.use("/event", eventRoute);
+app.use("/goods", goodsRoute);
+app.use("/post", postRoute);
+app.use("/reviewGoods", reviewGoodsRoute);
+app.use("/userHistory", userHistoryRoute);
 app.use("/user", userRoute);
 app.use("/goods", goodsRoute);
 app.use(express.static("public"));
 
 // mongoose connect
 mongoose
+  // .connect("mongodb://3.31.140.23:27017/ato", {
   .connect("mongodb://localhost:27017/ato", {
-    // .connect("mongodb://3.31.140.23:27017/ato", {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
