@@ -9,33 +9,49 @@ const storage = multer.diskStorage({
   filename: (req, file, cb) => {
     // not working on new Date().toISOString()
     cb(null, Date.now() + "_" + file.originalname);
-  }
+  },
 });
 
 // check image extension
-const fileFilter = (req, file, cb) => {
-  if (!file.originalname.match(/\.(png|jpg)$/)) {
-    cb(null, false);
-  } else {
+// const fileFilter = (req, file, cb) => {
+//   if (!file.originalname.match(/\.(png|jpg)$/)) {
+//     cb(null, false);
+//   } else {
+//     cb(null, true);
+//   }
+// };
+
+let fileFilter = function (req, file, cb) {
+  var allowedMimes = ["image/jpeg", "image/jpg", "image/pjpeg", "image/png"];
+  if (allowedMimes.includes(file.mimetype)) {
     cb(null, true);
+  } else {
+    cb(
+      {
+        success: false,
+        message: "Invalid file type. Only jpg, png image files are allowed.",
+      },
+      false
+    );
   }
 };
 
 const upload = multer({
   storage: storage,
-  limits: { fileSize: 1024 * 1024 * 100 },
-  fileFilter: fileFilter
+  // limits: { fileSize: 100 * 1024 * 1024 },
+  limits: { fileSize: 200 * 1024 * 1024 },
+  fileFilter: fileFilter,
 });
 
 // can post 1-5 images
-router.post("/", upload.array('image', 5), async (req, res) => {
-  console.log(req.files);
+router.post("/", upload.array("image", 5), async (req, res) => {
+  // console.log(req.files);
   console.log(req.body);
-  
+
   var filenames = [];
-  req.files.forEach((item) => {
-    filenames.push(item.filename);
-  });
+  // req.files.forEach((item) => {
+  //   filenames.push(item.filename);
+  // });
 
   const goods = new Goods({
     title: req.body.title,
@@ -44,7 +60,7 @@ router.post("/", upload.array('image', 5), async (req, res) => {
     sellerId: req.body.sellerId,
     price: req.body.price,
     tags: req.body.tags,
-    image: filenames
+    image: filenames,
   });
   goods
     .save()
@@ -58,39 +74,41 @@ router.post("/", upload.array('image', 5), async (req, res) => {
 });
 
 // post only images
-router.post("/image", upload.array('image', 5), async (req, res) => {
-  console.log(req.files);
-
+router.post("/image", upload.array("image", 5), async (req, res) => {
+  console.log("req.files : ", req.files);
+  console.log("req : ", req);
+  console.log("req.body : ", req.body);
   var filenames = [];
   req.files.forEach((item) => {
     filenames.push(item.filename);
   });
 
   const goods = new Goods({
-    image: filenames
+    image: filenames,
   });
 
   goods
     .save()
     .then((data) => {
       res.json(data);
+      console.log(data);
     })
     .catch((err) => {
       res.json({ message: err });
+      console.log(err);
     });
-})
+});
 
 // display 1 image
 router.get("/image/:image", async (req, res) => {
   try {
-    console.log(req.url.split('/')[2]);
-    res.sendFile(req.url.split('/')[2], { root: './images/goods/'});
-    
+    console.log(req.url.split("/")[2]);
+    res.sendFile(req.url.split("/")[2], { root: "./images/goods/" });
   } catch (err) {
     res.json({
       error: false,
       message: err,
-      data: req.url
+      data: req.url,
     });
   }
 });
