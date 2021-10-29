@@ -57,6 +57,30 @@ router.post("/", upload.array('image', 5), async (req, res) => {
     });
 });
 
+// post only images
+router.post("/image", upload.array('image', 5), async (req, res) => {
+  console.log(req.files);
+
+  var filenames = [];
+  req.files.forEach((item) => {
+    filenames.push(item.filename);
+  });
+
+  const goods = new Goods({
+    image: filenames
+  });
+
+  goods
+    .save()
+    .then((data) => {
+      res.json(data);
+    })
+    .catch((err) => {
+      res.json({ message: err });
+    });
+})
+
+// display 1 image
 router.get("/image/:image", async (req, res) => {
   try {
     console.log(req.url.split('/')[2]);
