@@ -57,6 +57,8 @@ const chatRoute = require("./routes/chat");
 
 const userRoute = require("./routes/user");
 
+const walletRoute = require("./routes/wallet");
+
 app.use("/event", eventRoute);
 app.use("/goods", goodsRoute);
 app.use("/post", postRoute);
@@ -70,6 +72,7 @@ app.use("/user", userRoute);
 app.use("/goods", goodsRoute);
 app.use(express.static("public"));
 
+app.use("/wallet", walletRoute);
 
 // mongoose connect
 mongoose
