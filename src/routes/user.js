@@ -86,7 +86,9 @@ router.get("/logout", async (req, res) => {
   }
 });
 
-router.post("/signup", async (req, res) => {
+router.post("/signup", upload.single('image'), async (req, res) => {
+  console.log(req.file);
+
   const user = new User({
     username: req.body.username,
     password: req.body.password,
@@ -94,6 +96,7 @@ router.post("/signup", async (req, res) => {
     nickname: req.body.nickname,
     email: req.body.email,
     phone: req.body.phone,
+    image: req.file.filename
   });
 
   try {
@@ -151,6 +154,24 @@ router.post("/signup", async (req, res) => {
     console.log(err);
   }
 });
+
+// Post Only Images
+router.post("/userimage", upload.single('image'), async (req, res) => {
+  console.log(req.file);
+
+  const user = new User({
+    image: req.file.filename
+  });
+
+  user
+    .save()
+    .then((data) => {
+      res.json(data);
+    })
+    .catch((err) => {
+      res.json({ message: err });
+    });
+})
 
 // Display Image
 router.get("/userimage/:image", async (req, res) => {
