@@ -78,7 +78,7 @@ app.use("/wallet", walletRoute);
 
 // mongoose connect
 mongoose
-  // .connect("mongodb://3.31.140.23:27017/ato", {
+  // .connect("mongodb://3.36.124.62:27017/ato", {
   .connect("mongodb://localhost:27017/ato", {
     useNewUrlParser: true,
     useUnifiedTopology: true,
