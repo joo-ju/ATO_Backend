@@ -6,7 +6,6 @@ router.get("/", async (req, res) => {
   try {
     const wallet = await Wallet.find();
     res.json(wallet);
-
   } catch (err) {
     res.json({ message: err });
   }
@@ -16,7 +15,6 @@ router.get("/:id", async (req, res) => {
   try {
     const wallet = await Wallet.findById({ _id: req.params.id });
     res.json(wallet);
-
   } catch (err) {
     res.json({ message: err });
   }
@@ -25,7 +23,7 @@ router.get("/:id", async (req, res) => {
 router.post("/", async (req, res) => {
   const wallet = new Wallet({
     userId: req.body.userId,
-    balance: req.body.balance,
+    // balance: req.body.balance,
   });
 
   wallet
@@ -53,7 +51,7 @@ router.put("/updateWallet", async (req, res) => {
       new: true,
     }
   ).exec();
-  
+
   updatedWallet
     .then((data) => {
       res.json(data);
@@ -71,6 +69,6 @@ router.delete("/:id", async (req, res) => {
   } catch (err) {
     res.json({ message: err });
   }
-})
+});
 
 module.exports = router;
