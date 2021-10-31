@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 const goodsSchema = new Schema({
   title: { type: String, default: "" }, // 제목
+  key: { type: String, default: "GD0" }, // 블록체인 goods key
   categoryId: { type: String, default: "" }, // 카테고리(스티커, 엽서 등)
   content: { type: String, default: "" }, // 내용
   sellerId: { type: String, default: "" }, // 판매자

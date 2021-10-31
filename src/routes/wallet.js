@@ -1,7 +1,11 @@
 const express = require("express");
+const User = require("../model/user");
 const Wallet = require("../model/wallet");
 const WalletHistory = require("../model/walletHistory");
 const router = express.Router();
+const axios = require("axios");
+
+const blockchain_url = "http://localhost:3001/api";
 
 router.get("/", async (req, res) => {
   try {
@@ -16,6 +20,19 @@ router.get("/:id", async (req, res) => {
   try {
     const wallet = await Wallet.findById({ _id: req.params.id });
     res.json(wallet);
+    
+    console.log(wallet);
+
+    // execute blockchain chaincode getWallet()
+    // get Wallet on blockchain
+    await axios.get(blockchain_url + "/getWallet?&walletid=" + wallet._id)
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
   } catch (err) {
     res.json({ message: err });
   }
@@ -37,7 +54,7 @@ router.post("/", async (req, res) => {
     userId: req.body.userId,
   });
 
-  wallet
+  await wallet
     .save()
     .then((data) => {
       // res.json(data);
@@ -57,7 +74,7 @@ router.post("/", async (req, res) => {
     }
   });
 
-  walletHistory
+  await walletHistory
     .save()
     .then((data) => {
       res.json(data);
@@ -65,6 +82,21 @@ router.post("/", async (req, res) => {
     })
     .catch((err) => {
       res.json({ message: err });
+    });
+
+  const user = await User.findOne({ _id: wallet.userId });
+  
+  // execute blockchain chaincode setWallet()
+  // post new Wallet on blockchain
+  await axios.get(
+      blockchain_url + 
+        "/setWallet?name=" + user.username +
+        "&id=" + wallet._id + 
+        "&coin=" + wallet.balance
+    ).then((res) => {
+      console.log(res.data);
+    }).catch((err) => {
+      console.log(err);
     });
 });
 
@@ -91,21 +123,37 @@ router.put("/updateWallet", async (req, res) => {
     console.log(updatedWalletHistory);
 
     const updatedWallet = await Wallet.updateOne(
-      {userId:req.body.userId},
+      { userId: req.body.userId },
       {
         $set: {
           balance: balance,
-          updatedTime: Date.now()
-        }
+          updatedTime: Date.now(),
+        },
       }
     ).exec();
     
     res.json(updatedWallet);
     console.log(updatedWallet);
-  
+    
+    const user = await User.findOne({ userId: wallet.userId });
+
+    // execute blockchain chaincode setWallet()
+    // update Wallet on blockchain
+    await axios.get(
+      blockchain_url + 
+        "/setWallet?name=" + user.username +
+        "&id=" + wallet._id + 
+        "&coin=" + balance
+    ).then((res) => {
+      console.log(res.data);
+    }).catch((err) => {
+      console.log(err);
+    });
+
   } catch (err) {
     res.json({ message: err });
   }
+
 });
 
 router.delete("/:id", async (req, res) => {

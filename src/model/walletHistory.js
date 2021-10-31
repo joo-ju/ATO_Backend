@@ -8,7 +8,7 @@ const walletHistorySchema = new Schema({
     {
       cost: { type: Number }, // 지갑 내역 (+ 충전, - 사용금액)
       balance: { type: Number }, // 잔액
-      type: { type: String }, // 유형 (charge, goodsId)
+      type: { type: String }, // 유형 (charge, sell, goodsId)
       enrollTime: { type: Date, default: Date.now },
     },
   ],
