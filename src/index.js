@@ -74,12 +74,11 @@ app.use(express.static("public"));
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: false }));
 
-
 app.use("/wallet", walletRoute);
 
 // mongoose connect
 mongoose
-  // .connect("mongodb://3.31.140.23:27017/ato", {
+  // .connect("mongodb://3.36.124.62:27017/ato", {
   .connect("mongodb://localhost:27017/ato", {
     useNewUrlParser: true,
     useUnifiedTopology: true,
