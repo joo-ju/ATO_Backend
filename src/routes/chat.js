@@ -168,7 +168,7 @@ router.get("/chat/:roomId/:goodsId", async (req, res) => {
     res.json({
       error: false,
       message: err,
-      data: rooms,
+      data: chat,
     });
   }
 });

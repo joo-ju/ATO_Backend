@@ -246,7 +246,9 @@ router.get("/user/buy/all/:buyerId", async (req, res) => {
 router.get("/sale/all", async (req, res) => {
   //   let post;
   try {
-    const goods = await Goods.find({ state: "판매중" });
+    const goods = await Goods.find({
+      $or: [{ state: "판매중" }, { state: "예약중" }],
+    });
 
     res.json(
       goods
@@ -301,6 +303,63 @@ router.put("/updateGoods", async (req, res) => {
           price: req.body.price,
           tags: req.body.tags,
           updateTime: Date.now(),
+          sellerId: req.body.sellerId,
+        },
+      },
+      {
+        upsert: true,
+        new: true,
+      }
+    ).exec();
+    res.json(updatedPost);
+    console.log(updatedPost);
+  } catch (err) {
+    console.log(err);
+    res.json({ message: err });
+  }
+});
+
+router.put("/update/status", async (req, res) => {
+  try {
+    // const updatedPost = Post.updateOne(req.params.postId, req.body, {
+    //   upsert: true,
+    //   new: true,
+    // }).exec();
+    console.log(req.body);
+    const updatedPost = Goods.updateOne(
+      { _id: req.body.id },
+      {
+        $set: {
+          state: req.body.status,
+        },
+      },
+      {
+        upsert: true,
+        new: true,
+      }
+    ).exec();
+    res.json(updatedPost);
+    console.log(updatedPost);
+  } catch (err) {
+    console.log(err);
+    res.json({ message: err });
+  }
+});
+
+// 판매완료 및 구매자 이름 등록
+router.put("/update/buyerId", async (req, res) => {
+  try {
+    // const updatedPost = Post.updateOne(req.params.postId, req.body, {
+    //   upsert: true,
+    //   new: true,
+    // }).exec();
+    console.log(req.body);
+    const updatedPost = Goods.updateOne(
+      { _id: req.body.id },
+      {
+        $set: {
+          buyerId: req.body.buyerId,
+          state: "판매완료",
         },
       },
       {
