@@ -7,7 +7,6 @@ router.get("/", async (req, res) => {
   try {
     const wallet = await Wallet.find();
     res.json(wallet);
-
   } catch (err) {
     res.json({ message: err });
   }
@@ -17,7 +16,6 @@ router.get("/:id", async (req, res) => {
   try {
     const wallet = await Wallet.findById({ _id: req.params.id });
     res.json(wallet);
-
   } catch (err) {
     res.json({ message: err });
   }
@@ -117,6 +115,6 @@ router.delete("/:id", async (req, res) => {
   } catch (err) {
     res.json({ message: err });
   }
-})
+});
 
 module.exports = router;
