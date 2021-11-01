@@ -20,29 +20,32 @@ router.get("/:id", async (req, res) => {
   try {
     const wallet = await Wallet.findById({ _id: req.params.id });
     res.json(wallet);
-    
+
     console.log(wallet);
 
     // execute blockchain chaincode getWallet()
     // get Wallet on blockchain
-    await axios.get(blockchain_url + "/getWallet?&walletid=" + wallet._id)
+    await axios
+      .get(blockchain_url + "/getWallet?&walletid=" + wallet._id)
       .then((res) => {
         console.log(res.data);
       })
       .catch((err) => {
         console.log(err);
       });
-
   } catch (err) {
     res.json({ message: err });
   }
 });
 
-router.get("/history", async (req, res) => {
+// 내역 조회
+router.get("/history/:walletId", async (req, res) => {
   try {
-    const walletHistory = await WalletHistory.find();
-    res.json(walletHistory);
-
+    const walletHistory = await WalletHistory.findOne({
+      walletId: req.params.walletId,
+    });
+    console.log(walletHistory.content);
+    res.json(walletHistory.content);
   } catch (err) {
     res.json({ message: err });
   }
@@ -50,31 +53,11 @@ router.get("/history", async (req, res) => {
 
 // post wallet and wallet history
 router.post("/", async (req, res) => {
-  const wallet = new Wallet({
+  const wallet = await new Wallet({
     userId: req.body.userId,
   });
 
   await wallet
-    .save()
-    .then((data) => {
-      // res.json(data);
-      console.log(data);
-    })
-    .catch((err) => {
-      res.json({ message: err });
-    });
-
-  const walletHistory = new WalletHistory({
-    userId: wallet.userId,
-    walletId: wallet._id,
-    content: {
-      cost: wallet.balance,
-      balance: wallet.balance,
-      type: "charge"
-    }
-  });
-
-  await walletHistory
     .save()
     .then((data) => {
       res.json(data);
@@ -84,18 +67,44 @@ router.post("/", async (req, res) => {
       res.json({ message: err });
     });
 
+  const walletHistory = await new WalletHistory({
+    userId: wallet.userId,
+    walletId: wallet._id,
+    content: {
+      cost: wallet.balance,
+      balance: wallet.balance,
+      type: "charge",
+    },
+  });
+
+  await walletHistory
+    .save()
+    .then((data) => {
+      // res.json(data);
+      console.log(data);
+    })
+    .catch((err) => {
+      res.json({ message: err });
+    });
+
   const user = await User.findOne({ _id: wallet.userId });
-  
+
   // execute blockchain chaincode setWallet()
   // post new Wallet on blockchain
-  await axios.get(
-      blockchain_url + 
-        "/setWallet?name=" + user.username +
-        "&id=" + wallet._id + 
-        "&coin=" + wallet.balance
-    ).then((res) => {
+  await axios
+    .get(
+      blockchain_url +
+        "/setWallet?name=" +
+        user.username +
+        "&id=" +
+        wallet._id +
+        "&coin=" +
+        wallet.balance
+    )
+    .then((res) => {
       console.log(res.data);
-    }).catch((err) => {
+    })
+    .catch((err) => {
       console.log(err);
     });
 });
@@ -118,7 +127,7 @@ router.put("/updateWallet", async (req, res) => {
         },
       }
     ).exec();
-    
+
     // res.json(updatedWalletHistory);
     console.log(updatedWalletHistory);
 
@@ -131,29 +140,33 @@ router.put("/updateWallet", async (req, res) => {
         },
       }
     ).exec();
-    
+
     res.json(updatedWallet);
     console.log(updatedWallet);
-    
+
     const user = await User.findOne({ userId: wallet.userId });
 
     // execute blockchain chaincode setWallet()
     // update Wallet on blockchain
-    await axios.get(
-      blockchain_url + 
-        "/setWallet?name=" + user.username +
-        "&id=" + wallet._id + 
-        "&coin=" + balance
-    ).then((res) => {
-      console.log(res.data);
-    }).catch((err) => {
-      console.log(err);
-    });
-
+    await axios
+      .get(
+        blockchain_url +
+          "/setWallet?name=" +
+          user.username +
+          "&id=" +
+          wallet._id +
+          "&coin=" +
+          balance
+      )
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   } catch (err) {
     res.json({ message: err });
   }
-
 });
 
 router.delete("/:id", async (req, res) => {
