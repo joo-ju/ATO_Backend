@@ -1,6 +1,7 @@
 const express = require("express");
 const Goods = require("../model/goods");
 const Wallet = require("../model/wallet");
+const WalletHistory = require("../model/walletHistory");
 const User = require("../model/user");
 const router = express.Router();
 const multer = require("multer");
@@ -396,94 +397,121 @@ router.put("/update/status", async (req, res) => {
 });
 
 // 판매완료 및 구매자 이름 등록
-// router.put("/update/buyerId", async (req, res) => {
-//   // try {
-//     // const updatedPost = Post.updateOne(req.params.postId, req.body, {
-//     //   upsert: true,
-//     //   new: true,
-//     // }).exec();
-//     console.log(req.body);
-//     const updatedPost = Goods.updateOne(
-//       { _id: req.body.id },
-//       {
-//         $set: {
-//           buyerId: req.body.buyerId,
-//           state: "판매중",
-//         },
-//       },
-//       {
-//         upsert: true,
-//         new: true,
-//       }
-//     ).exec();
+router.put("/update/buyerId", async (req, res) => {
+  // try {
+    // const updatedPost = Post.updateOne(req.params.postId, req.body, {
+    //   upsert: true,
+    //   new: true,
+    // }).exec();
+    console.log(req.body);
+    const updatedPost = Goods.updateOne(
+      { _id: req.body.id },
+      {
+        $set: {
+          buyerId: req.body.buyerId,
+          state: "판매완료",
+          updateTime: Date.now()
+        },
+      },
+      {
+        upsert: true,
+        new: true,
+      }
+    ).exec();
 
-//     res.json(updatedPost);
-//     console.log(updatedPost);
+    res.json(updatedPost);
+    console.log(updatedPost);
 
-//     const goods = await Goods.findOne({ _id: req.body.id });
-//     console.log(goods);
+    const goods = await Goods.findOne({ _id: req.body.id });
+    const wallet = await Wallet.findOne({ userId: goods.buyerId });
 
-//     // await axios.get(
-//     //   encodeURI(
-//     //     blockchain_url + 
-//     //       "purchaseGoods?walletid=" + req.body.buyerId +
-//     //       "&goodskey=" + goods.key
-//     //   )).then((res) => {
-//     //     console.log(res.data);
-//     //   }).catch((err) => {
-//     //     console.log(err);
-//     //   });
+    await axios.get(
+      encodeURI(
+        blockchain_url + 
+          "purchaseGoods?walletid=" + wallet._id +
+          "&goodskey=" + goods.key
+      )).then((res) => {
+        console.log(res.data);
+      }).catch((err) => {
+        console.log(err);
+      });
     
-//     // update seller wallet
-//     const sellerwallet = await Wallet.findOne({ userId: req.body.userId });
-//     const balance = sellerwallet.balance + req.body.cost;
+    await updateWallet(goods, "seller");
+    await updateWallet(goods, "buyer");
 
-//     const updatedsellerHistory = await WalletHistory.updateOne(
-//       { userId: req.body.userId },
-//       {
-//         $push: {
-//           content: {
-//             cost: goods.price,
-//             balance: balance,
-//             type: "sell",
-//           },
-//         },
-//       }
-//     ).exec();
     
-//     // res.json(updatedWalletHistory);
-//     console.log(updatedsellerHistory);
+  // } catch (err) {
+  //   console.log(err);
+  //   res.json({ message: err });
+  // }
+});
 
-//     const updatedsellerWallet = await Wallet.updateOne(
-//       { userId: req.body.userId },
-//       {
-//         $set: {
-//           balance: balance,
-//           updatedTime: Date.now(),
-//         },
-//       }
-//     ).exec();
-    
-//     res.json(updatedsellerWallet);
-//     console.log(updatedsellerWallet);
-    
-//     const seller = await User.findOne({ userId: goods.sellerId });
+// /wallet/updateWallet와 같은 기능
+// update wallet and wallet history
+var updateWallet = async function(goods, type) {
 
-//     await axios.get(
-//       blockchain_url + 
-//         "/setWallet?name=" + user.username +
-//         "&id=" + wallet._id + 
-//         "&coin=" + balance
-//     ).then((res) => {
-//       console.log(res.data);
-//     }).catch((err) => {
-//       console.log(err);
-//     });
-    
-//   // } catch (err) {
-//   //   console.log(err);
-//   //   res.json({ message: err });
-//   // }
-// });
+  var cost;
+  var person;
+
+  if (type == "seller") {
+    cost = goods.price;
+    person = goods.sellerId;
+  } else {
+    cost = goods.price * -1;
+    person = goods.buyerId;
+  }
+
+  // // update seller wallet
+  const wallet = await Wallet.findOne({ userId: person });
+  const balance = wallet.balance + cost;
+  // console.log(type, cost, balance);
+
+  const updatedWalletHistory = await WalletHistory.updateOne(
+    { userId: person },
+    {
+      $push: {
+        content: {
+          cost: cost,
+          balance: balance,
+          type: "sell",
+        },
+        $set: {
+          updateTime: Date.now()
+        }
+      },
+    }
+  ).exec();
+  
+  // res.json(updatedWalletHistory);
+  console.log(updatedWalletHistory);
+  console.log("Finish update " + type + " wallet history");
+
+  const updatedWallet = await Wallet.updateOne(
+    { userId: person },
+    {
+      $set: {
+        balance: balance,
+        updatedTime: Date.now(),
+      },
+    }
+  ).exec();
+  
+  // res.json(updatedSellerWallet);
+  console.log(updatedWallet);
+  console.log("Finish update " + type + " wallet");
+  
+  const user = await User.findOne({ userId: person });
+  
+  await axios.get(
+    blockchain_url + 
+      "setWallet?name=" + user.username +
+      "&id=" + wallet._id + 
+      "&coin=" + balance
+  ).then((res) => {
+    console.log(res.data);
+  }).catch((err) => {
+    console.log(err);
+  });
+}
 
 module.exports = router;
