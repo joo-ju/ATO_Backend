@@ -204,13 +204,13 @@ router.get("/user/sold/all/:sellerId", async (req, res) => {
 });
 
 // 로그인한 유저의 숨김 제품 가져오기
-router.get("/user/hiding/all/:sellerId", async (req, res) => {
+router.get("/user/reserve/all/:sellerId", async (req, res) => {
   //   let post;
   try {
     console.log(req.params.sellerId);
     const goods = await Goods.find({
       sellerId: req.params.sellerId,
-      state: "숨김",
+      state: "예약중",
     });
 
     res.json(goods);

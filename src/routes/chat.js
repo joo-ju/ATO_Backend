@@ -1,6 +1,8 @@
 const express = require("express");
 const Room = require("../model/room");
 const Chat = require("../model/chat");
+const Goods = require("../model/goods");
+const User = require("../model/user");
 const UserHistory = require("../model/userHistory");
 const router = express.Router();
 // const UserHistory = require("../model/userHistory");
@@ -94,24 +96,91 @@ router.delete("/all", async (req, res) => {
 
   res.json(result);
 });
+
+// // 유저가 속한 채팅방 조회 (대화, 유저, 상품
+// router.get("/user/all/:userId", async (req, res) => {
+//   var chatJSON = new Object();
+//   var goodsJSON = [];
+//   var userJSON = new Object();
+//   var allJSON = [];
+//   const room2 = await Room.find({
+//     $or: [
+//       {
+//         sellerId: req.params.userId,
+//       },
+//       { customerId: req.params.userId },
+//     ],
+//   });
+//   console.log(room2[0].goodsId);
+//   console.log(room2.length);
+//   // for (let i = 0; i < room2.length; i++) {
+
+//   for (let i = 0; i < 3; i++) {
+//     // if (room2[i].sellerId == req.params.userId || room2[i].sellerId != "") {
+//     //   userJSON = await User.findOne({ _id: room2[i].customerId });
+//     // } else if (
+//     //   room2[i].customerId == req.params.userId ||
+//     //   room2[i].customerId != ""
+//     // ) {
+//     //   userJSON = await User.findOne({ _id: room2[i].sellerId });
+//     // }
+//     // console.log("채팅 유저 정보 : ", userJSON);
+
+//     var goods = await Goods.findOne({
+//       _id: room2[i].goodsId,
+//     });
+//     var chat = await Chat.findOne({
+//       roomId: room2[i].roomId,
+//     });
+//     // var a = chat.;
+//     console.log(chat.contents);
+//     await goodsJSON.push(goods);
+//     // await goodsJSON.push({ content: a });
+
+//     console.log("goodsJSON : ", goodsJSON);
+//     console.log("\n");
+//   }
+//   // for (const obj in room2) {
+//   //   console.log("obj : ", obj);
+
+//   //   console.log(`${room2[obj]}`);
+//   //   var each = room2[obj];
+//   //   // for (const roomObj in each) {
+//   //   //   console.log(`${each[roomObj]}`);
+//   //   // }
+//   // }
+// });
+
 // 유저의 채팅방 목록 조회
 router.get("/user/all/:userId", async (req, res) => {
   //   let post;
   try {
+    console.log("\n 유저가 참여한 모든 채팅방");
     console.log("/chat/user/all/", req.params.userId);
-    const room = await UserHistory.findOne({
-      userId: req.params.userId,
+    const room2 = await Room.find({
+      $or: [
+        {
+          sellerId: req.params.userId,
+        },
+        { customerId: req.params.userId },
+      ],
     });
+    console.log(room2);
+    // const room = await UserHistory.findOne({
+    //   userId: req.params.userId,
+    // });
     // console.log("userhistory.chatRooms : ", room.chatRooms);
-    res.json(room.chatRooms);
+    // res.json(room.chatRooms);
+    res.json(room2);
   } catch (err) {
     res.json({
       error: false,
       message: err,
-      data: rooms,
+      // data: rooms,
     });
   }
 });
+
 router.get("/user/goods/all/:goodsId/:userId", async (req, res) => {
   //   let post;
   try {
@@ -168,7 +237,6 @@ router.get("/chat/:roomId/:goodsId", async (req, res) => {
     res.json({
       error: false,
       message: err,
-      data: chat,
     });
   }
 });
@@ -198,41 +266,5 @@ router.put("/message", async (req, res) => {
     res.json({ message: err });
   }
 });
-// router.get("/one", async (req, res) => {
-
-//   // const room = new Room({
-//   //   customerId: req.body.customerId,
-//   //   sellerId: req.body.sellerId,
-//   // });
-//   // room
-//   //   .save()
-//   //   .then((data) => {
-//   //     res.json(data);
-//   //   })
-//   //   .catch((err) => {
-//   //     res.json({ message: err });
-//   //   });
-
-//   io.sockets.on("connection", function (socket) {
-//     connections.push(socket);
-//     console.log("Connect: %s sockets are connected", connections.length);
-
-//     // disconnect
-//     socket.on("disconnect", function (data) {
-//       connections.splice(connections.indexOf(socket), 1);
-//       console.log("Discconect: %s sockets are connected", connections.length);
-//     });
-
-//     socket.on("NodeJS Server Port", function (data) {
-//       console.log(data);
-//       io.sockets.emit("iOS Client Port", { message: "hi ios client!" });
-//     });
-//     socket.on("event1", function (data) {
-//       console.log(data);
-//       io.sockets.emit("e1", { message: data });
-//     });
-//     // socket.on()
-//   });
-// });
 
 module.exports = router;
