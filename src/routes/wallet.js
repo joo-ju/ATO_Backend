@@ -124,6 +124,7 @@ router.put("/updateWallet", async (req, res) => {
             balance: balance,
             type: req.body.type,
           },
+          updateTime: Date.now()
         },
       }
     ).exec();
