@@ -59,7 +59,7 @@ router.post("/", upload.array("image", 5), async (req, res) => {
   // req.files.forEach((item) => {
   //   filenames.push(item.filename);
   // });
-  
+
   const goods = new Goods({
     title: req.body.title,
     key: "GD" + String(goodskeynum++),
@@ -80,25 +80,35 @@ router.post("/", upload.array("image", 5), async (req, res) => {
     .catch((err) => {
       res.json({ message: err });
     });
-  
+
   const user = await User.findOne({ userId: req.body.sellerId });
   console.log(user.username);
   const wallet = await Wallet.findOne({ userId: req.body.sellerId });
   console.log(wallet._id);
-  
-  await axios.get(
-    encodeURI(
-      blockchain_url +
-        "setGoods?title=" + req.body.title +
-        "&state=판매중" +
-        "&seller=" + user.username +
-        "&category=" + req.body.categoryId +
-        "&price=" + req.body.price +
-        "&content=" + req.body.content +
-        "&walletid=" + wallet._id
-    )).then((res) => {
+
+  await axios
+    .get(
+      encodeURI(
+        blockchain_url +
+          "setGoods?title=" +
+          req.body.title +
+          "&state=판매중" +
+          "&seller=" +
+          user.username +
+          "&category=" +
+          req.body.categoryId +
+          "&price=" +
+          req.body.price +
+          "&content=" +
+          req.body.content +
+          "&walletid=" +
+          wallet._id
+      )
+    )
+    .then((res) => {
       console.log(res.data);
-    }).catch((err) => {
+    })
+    .catch((err) => {
       console.log(err);
     });
 });
@@ -148,14 +158,15 @@ router.get("/", async (rea, res) => {
     const goods = await Goods.find();
     res.json(goods);
 
-    await axios.get(blockchain_url + "getAllGoods")
+    await axios
+      .get(blockchain_url + "getAllGoods")
       .then((res) => {
         console.log(res.data);
-        console.log(res.data[(res.data).length - 1].Key);
-      }).catch((err) => {
+        console.log(res.data[res.data.length - 1].Key);
+      })
+      .catch((err) => {
         console.log(err);
       });
-      
   } catch (err) {
     res.json({ message: err });
   }
@@ -176,13 +187,14 @@ router.get("/fetchOne/:id", async (req, res) => {
       //   post,
     );
 
-    await axios.get(blockchain_url + "getGoods?goodskey=" + goods.key)
+    await axios
+      .get(blockchain_url + "getGoods?goodskey=" + goods.key)
       .then((res) => {
         console.log(res.data);
-      }).catch((err) => {
+      })
+      .catch((err) => {
         console.log(err);
       });
-      
   } catch (err) {
     res.json({
       error: false,
@@ -267,7 +279,7 @@ router.get("/user/hiding/all/:sellerId", async (req, res) => {
     console.log(req.params.sellerId);
     const goods = await Goods.find({
       sellerId: req.params.sellerId,
-      state: "숨김",
+      state: "예약중",
     });
 
     res.json(goods);
@@ -353,16 +365,20 @@ router.put("/updateGoods", async (req, res) => {
 
     const goods = await Goods.findOne({ _id: req.body.id });
 
-    await axios.get(
-        blockchain_url + 
-          "changeGoodsPrice?goodskey=" + goods.key + 
-          "&price=" + req.body.price
-      ).then((res) => {
+    await axios
+      .get(
+        blockchain_url +
+          "changeGoodsPrice?goodskey=" +
+          goods.key +
+          "&price=" +
+          req.body.price
+      )
+      .then((res) => {
         console.log(res.data);
-      }).catch((err) => {
-        console.log(err);
       })
-
+      .catch((err) => {
+        console.log(err);
+      });
   } catch (err) {
     console.log(err);
     res.json({ message: err });
@@ -397,6 +413,97 @@ router.put("/update/status", async (req, res) => {
 });
 
 // 판매완료 및 구매자 이름 등록
+
+// router.put("/update/buyerId", async (req, res) => {
+//   // try {
+//     // const updatedPost = Post.updateOne(req.params.postId, req.body, {
+//     //   upsert: true,
+//     //   new: true,
+//     // }).exec();
+//     console.log(req.body);
+//     const updatedPost = Goods.updateOne(
+//       { _id: req.body.id },
+//       {
+//         $set: {
+//           buyerId: req.body.buyerId,
+//           state: "판매중",
+//         },
+//       },
+//       {
+//         upsert: true,
+//         new: true,
+//       }
+//     ).exec();
+
+//     res.json(updatedPost);
+//     console.log(updatedPost);
+
+//     const goods = await Goods.findOne({ _id: req.body.id });
+//     console.log(goods);
+
+//     // await axios.get(
+//     //   encodeURI(
+//     //     blockchain_url +
+//     //       "purchaseGoods?walletid=" + req.body.buyerId +
+//     //       "&goodskey=" + goods.key
+//     //   )).then((res) => {
+//     //     console.log(res.data);
+//     //   }).catch((err) => {
+//     //     console.log(err);
+//     //   });
+
+//     // update seller wallet
+//     const sellerwallet = await Wallet.findOne({ userId: req.body.userId });
+//     const balance = sellerwallet.balance + req.body.cost;
+
+//     const updatedsellerHistory = await WalletHistory.updateOne(
+//       { userId: req.body.userId },
+//       {
+//         $push: {
+//           content: {
+//             cost: goods.price,
+//             balance: balance,
+//             type: "sell",
+//           },
+//         },
+//       }
+//     ).exec();
+
+//     // res.json(updatedWalletHistory);
+//     console.log(updatedsellerHistory);
+
+//     const updatedsellerWallet = await Wallet.updateOne(
+//       { userId: req.body.userId },
+//       {
+//         $set: {
+//           balance: balance,
+//           updatedTime: Date.now(),
+//         },
+//       }
+//     ).exec();
+
+//     res.json(updatedsellerWallet);
+//     console.log(updatedsellerWallet);
+
+//     const seller = await User.findOne({ userId: goods.sellerId });
+
+//     await axios.get(
+//       blockchain_url +
+//         "/setWallet?name=" + user.username +
+//         "&id=" + wallet._id +
+//         "&coin=" + balance
+//     ).then((res) => {
+//       console.log(res.data);
+//     }).catch((err) => {
+//       console.log(err);
+//     });
+
+//   // } catch (err) {
+//   //   console.log(err);
+//   //   res.json({ message: err });
+//   // }
+// });
+
 router.put("/update/buyerId", async (req, res) => {
   // try {
     // const updatedPost = Post.updateOne(req.params.postId, req.body, {
@@ -513,5 +620,6 @@ var updateWallet = async function(goods, type) {
     console.log(err);
   });
 }
+
 
 module.exports = router;
