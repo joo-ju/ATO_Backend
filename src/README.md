@@ -2,6 +2,8 @@
 
 [1. Goods ](#goods-goods)
 
+[2. User ](#user)
+
 <br/>
 
 ## Goods
@@ -164,3 +166,169 @@
     "__v": 0
 }
 ```
+
+
+<br/>
+
+## User
+
+| Name                                                  | Method | URL           |
+| ----------------------------------------------------- | ------ | ------------- |
+| [사용자 모두 조회](#사용자-모두-조회)                 | GET    | /user         |
+| [사용자 1명 조회 - userId](#사용자-1명-조회---userid) | GET    | /user/:userId |
+| [사용자 로그인](#사용자-로그인)                       | POST   | /user/login   |
+| [사용자 로그아웃](#사용자-로그아웃)                   | GET    | /user/logout  |
+| [사용자 회원가입](#사용자-회원가입)                   | POST   | /user/signup  |
+| [사용자 정보 수정](#사용자-정보-수정---userid)        | PUT    | /user/:userId |
+
+<br><br>
+
+> ### 사용자 모두 조회
+
+`GET`&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**/goods**
+
+##### Response
+
+```bash
+[{
+    "_id": "616579dee6a40292c0bcab6a",
+    "username": "Abcd",
+    "password": "1234",
+    "name": "최소한",
+    "nickname": "Limit",
+    "email": "Limit@gmail.com",
+    "phone": 1022220987,
+    "score": 0,
+    "count": 0,
+    "__v": 0
+}]
+```
+
+> ### 사용자 1명 조회 - userId
+>
+> `GET`&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**/user/:userId**
+
+##### Response
+
+```bash
+{
+    "_id": "616579dee6a40292c0bcab6a",
+    "username": "Abcd",
+    "password": "1234",
+    "name": "최소한",
+    "nickname": "Limit",
+    "email": "Limit@gmail.com",
+    "phone": 1022220987,
+    "score": 0,
+    "count": 0,
+    "__v": 0
+}
+```
+
+> ### 사용자 로그인
+>
+> `POST`&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**/user/login**
+
+##### Request
+
+```bash
+{
+    "username": "Abcd",
+    "password": "1234"
+}
+```
+
+##### Response
+
+```bash
+{
+    "user": {
+        "id": "616579dee6a40292c0bcab6a",
+        "username": "Abcd",
+        "authorized": true
+    }
+}
+```
+
+> ### 사용자 로그아웃
+>
+> `GET`&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**/user/logout**
+
+##### Response
+
+```bash
+{
+
+}
+```
+
+> ### 사용자 회원가입
+>
+> `POST`&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**/user/signup**
+
+##### Request
+
+```bash
+{
+    "username": "",
+    "password": "",
+    "name": "",
+    "nickname": "",
+    "email": "",
+    "phone": "",
+    "image": ""
+}
+```
+
+##### Response
+
+```bash
+{
+    "_id": "616579dee6a40292c0bcab6a",
+    "username": "Abcd",
+    "password": "1234",
+    "name": "최소한",
+    "nickname": "Limit",
+    "email": "Limit@gmail.com",
+    "phone": 1022220987,
+    "score": 0,
+    "count": 0,
+    "__v": 0
+}
+```
+
+> ### 사용자 정보 수정 - userId
+>
+> `PUT`&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**/user/:userId**
+
+##### Request
+
+```bash
+{
+    "username": "",
+    "password": "",
+    "name": "",
+    "nickname": "",
+    "email": "",
+    "phone": "",
+    "image": ""
+}
+```
+
+##### Response
+
+```bash
+{
+    "_id": "616579dee6a40292c0bcab6a",
+    "username": "Abcd",
+    "password": "1234",
+    "name": "최소한",
+    "nickname": "Limit",
+    "email": "Limit@gmail.com",
+    "phone": 1022220987,
+    "score": 0,
+    "count": 0,
+    "__v": 0
+}
+```
+
