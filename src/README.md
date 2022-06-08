@@ -4,6 +4,8 @@
 
 [2. User ](#user)
 
+[2. UserHistory ](#userhistory)
+
 <br/>
 
 ## Goods
@@ -166,7 +168,6 @@
     "__v": 0
 }
 ```
-
 
 <br/>
 
@@ -332,3 +333,136 @@
 }
 ```
 
+<br/>
+
+## UserHistory
+
+| Name                                                      | Method | URL                                 |
+| --------------------------------------------------------- | ------ | ----------------------------------- |
+| [UserHistory 등록](#userhistory-등록)                     | POST   | /userHistory                        |
+| [UserHistory 조회 - userId](#userhistory-조회---userid)   | GET    | /userHistory/user/:userId           |
+| [찜 상품 모두 조회 - userId](#찜-상품-모두-조회---userid) | GET    | /userHistory/user/wishGoods/:userId |
+| [찜 상품 삭제](#찜-상품-삭제)                             | PUT    | /userHistory/wishGoods/delete       |
+| [찜 상품 추가](#찜-상품-추가)                             | PUT    | /userHistory/wishGoods              |
+
+<br><br>
+
+> ### UserHistory 등록
+>
+> `POST`&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**/userHistory**
+
+##### Request
+
+```bash
+{
+    "userId": "",
+}
+```
+
+##### Response
+
+```bash
+{
+    "_id": "616579dee6a40292c0bcab6a",
+    "sellGoods": [],
+    "buyGoods": [],
+    "event": [],
+    "buyTicket": [],
+    "wishGoods": [],
+    "__v": 0
+}
+```
+
+> ### UserHistory 조회 - userId
+>
+> `GET`&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**/userHistory/user/:userId**
+
+##### Response
+
+```bash
+{
+    "_id": "616579dee6a40292c0bcab6a",
+    "userId": "616579dee6a40292c0bcab6a",
+    "sellGoods": [],
+    "buyGoods": [],
+    "event": [],
+    "buyTicket": [],
+    "wishGoods": ["616579dee6a40292c0bcab6a"],
+    "__v": 0
+}
+```
+
+> ### 찜 상품 모두 조회 - userId
+>
+> `GET`&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**/userHistory/user/wishGoods/:userId**
+
+##### Response
+
+```bash
+{
+    "_id": "616579dee6a40292c0bcab6a",
+    "userId": "616579dee6a40292c0bcab6a",
+    "sellGoods": [],
+    "buyGoods": [],
+    "event": [],
+    "buyTicket": [],
+    "wishGoods": ["616579dee6a40292c0bcab6a"],
+    "__v": 0
+}
+```
+
+> ### 찜 상품 삭제
+>
+> `PUT`&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**/userHistory/wishGoods/delete**
+
+##### Request
+
+```bash
+{
+    "userId": "",
+    "goodsId": ""
+}
+```
+
+##### Response
+
+```bash
+{
+    "_id": "616579dee6a40292c0bcab6a",
+    "userId": "616579dee6a40292c0bcab6a",
+    "sellGoods": [],
+    "buyGoods": [],
+    "event": [],
+    "buyTicket": [],
+    "wishGoods": [],
+    "__v": 0
+}
+```
+
+> ### 찜 상품 추가
+>
+> `PUT`&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**/userHistory/wishGoods**
+
+##### Request
+
+```bash
+{
+    "userId": "",
+    "goodsId": ""
+}
+```
+
+##### Response
+
+```bash
+{
+    "_id": "616579dee6a40292c0bcab6a",
+    "userId": "616579dee6a40292c0bcab6a",
+    "sellGoods": [],
+    "buyGoods": [],
+    "event": [],
+    "buyTicket": [],
+    "wishGoods": ["616579dee6a40292c0bcab6a"],
+    "__v": 0
+}
+```
