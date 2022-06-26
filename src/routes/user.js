@@ -188,11 +188,11 @@ router.get("/userimage/:image", async (req, res) => {
 });
 
 // Update Only User Image
-router.put("/userimage/:username", upload.single("image"), async (req, res) => {
+router.put("/userimage/:userId", upload.single("image"), async (req, res) => {
   try {
     console.log(req.file);
     const updatedUser = await User.updateOne(
-      { username: req.params.username },
+      { _id: req.params.userId },
       {
         $set: { image: req.file.filename },
       }
@@ -207,7 +207,7 @@ router.put("/userimage/:username", upload.single("image"), async (req, res) => {
 router.put("/:userId", upload.single("image"), async (req, res) => {
   try {
     const updatedUser = await User.updateOne(
-      { username: req.params.userId },
+      { _id: req.params.userId },
       {
         $set: {
           password: req.body.password,
@@ -215,6 +215,7 @@ router.put("/:userId", upload.single("image"), async (req, res) => {
           nickname: req.body.nickname,
           email: req.bodyemail,
           phone: req.body.phone,
+          address: req.body.address,
           image: req.file.filename,
         },
       }
@@ -226,9 +227,9 @@ router.put("/:userId", upload.single("image"), async (req, res) => {
 });
 
 // Delete User
-router.delete("/:username", async (req, res) => {
+router.delete("/:userId", async (req, res) => {
   try {
-    const removeduser = await User.deleteOne({ username: req.params.username });
+    const removeduser = await User.deleteOne({ _id: req.params.userId });
     res.json(removeduser);
   } catch (err) {
     res.json({ message: err });
